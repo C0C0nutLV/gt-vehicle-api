@@ -13,8 +13,10 @@ async function generateGuatemalanReport(plate, nit, vin) {
     console.log(`Starting parallel data extraction for Plate: ${plate}, VIN: ${vin}`);
     
     // Launch a single browser instance to save memory
-    const browser = await puppeteer.launch({headless: true, // MUST be true for production servers
-    args: ['--no-sandbox', '--disable-setuid-sandbox'] // Bypasses server security blocks});
+    const browser = await puppeteer.launch({
+        headless: true, // MUST be true for production servers
+        args: ['--no-sandbox', '--disable-setuid-sandbox'] // Bypasses server security blocks
+    });
 
     try {
         // Run all scraping tasks at the exact same time
