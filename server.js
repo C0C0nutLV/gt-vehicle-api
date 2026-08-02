@@ -1,5 +1,5 @@
 const express = require('express');
-const { generateCompleteReport } = require('./guatemala_scraper');
+const { generateGuatemalanReport } = require('./guatemala_scraper');
 
 const app = express();
 
@@ -10,7 +10,8 @@ app.post('/api/check-vehicle', async (req, res) => {
         const { nit, vin } = req.body;
         console.log(`[API] Received request for NIT: ${nit}, VIN: ${vin}`);
         
-        const report = await generateCompleteReport(nit, vin);
+        // This exact name must match the scraper's export!
+        const report = await generateGuatemalanReport('P000000', nit, vin);
         
         res.json({
             success: true,
@@ -25,7 +26,7 @@ app.post('/api/check-vehicle', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
     console.log(`=== SERVER IS RUNNING ON PORT ${PORT} ===`);
 });

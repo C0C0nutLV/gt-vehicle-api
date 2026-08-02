@@ -149,5 +149,4 @@ async function scrapeMP(browser, plate, vin) {
    TEST EXECUTION
    ========================================================= */
 // When testing the MVP locally, you can use real details to verify the DOM selectors
-generateGuatemalanReport // Export the function for server.js
 module.exports = { generateGuatemalanReport };
