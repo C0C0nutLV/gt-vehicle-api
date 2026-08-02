@@ -1,43 +1,205 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificador Vehicular Guatemala</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VerifCar GT - Verificación y Comunidad Vehicular</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
-    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
-        <div class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">🚗 Verificador GT</h1>
-            <p class="text-sm text-gray-500 mt-1">Revisa el estado de la SAT, multas y reporte de robo al instante.</p>
-        </div>
-        
-        <form id="vehicleForm" class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700">NIT del Propietario</label>
-                <input type="text" id="nit" required placeholder="Ej. 1234567-8" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+<body class="bg-slate-950 text-slate-100 h-full flex flex-col justify-between selection:bg-emerald-500 selection:text-white pb-20 md:pb-0">
+
+    <!-- Top Navigation Header -->
+    <header class="w-full bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 text-emerald-400 font-bold text-sm">
+                🚗
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Número de VIN (Chasis)</label>
-                <input type="text" id="vin" required placeholder="Ej. JA4MW31G560XXXXXX" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase">
+            <span class="font-black text-base tracking-wider bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">
+                VERIFCAR GT
+            </span>
+        </div>
+        <div class="flex items-center space-x-2">
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-semibold px-2.5 py-1 rounded-full border border-emerald-500/20">
+                🇬🇹 Guatemala Live
+            </span>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="w-full max-w-xl mx-auto p-4 space-y-6 flex-grow">
+
+        <!-- Tab 1: Vehicle Verifier View -->
+        <section id="verifierSection" class="space-y-4">
+            <div class="bg-gradient-to-br from-slate-900 to-slate-900/90 rounded-3xl p-5 md:p-6 shadow-2xl border border-slate-800/80 relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                
+                <div class="mb-4">
+                    <h2 class="text-lg font-bold text-white flex items-center">
+                        <i class="fa-solid fa-shield-halved text-emerald-400 mr-2"></i> Verificador Inteligente
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Consulta de SAT, multas y reporte de robo en tiempo real.</p>
+                </div>
+                
+                <form id="vehicleForm" class="space-y-3.5">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">
+                            NIT o DPI (CUI de 13 dígitos) <span class="text-emerald-400">*</span>
+                        </label>
+                        <input type="text" id="nit" required placeholder="Ej. 1234567-8 o tu DPI" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none text-white placeholder-slate-600 transition">
+                        <p class="text-[10px] text-slate-500 mt-1">💡 Compatible con la unificación oficial SAT/DPI.</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">
+                            Número de VIN (Chasis) <span class="text-emerald-400">*</span>
+                        </label>
+                        <input type="text" id="vin" required placeholder="Ej. JA4MW31G560XXXXXX" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm uppercase focus:ring-2 focus:ring-emerald-500 focus:outline-none text-white placeholder-slate-600 transition">
+                    </div>
+                    <button type="submit" id="submitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl transition shadow-lg shadow-emerald-600/20 text-sm flex items-center justify-center space-x-2">
+                        <span>Consultar Vehículo Ahora</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </form>
+
+                <div id="loading" class="hidden mt-4 text-center py-4">
+                    <div class="inline-block animate-spin rounded-full h-7 w-7 border-4 border-emerald-500 border-t-transparent"></div>
+                    <p class="text-xs text-emerald-400 font-medium mt-2 animate-pulse">Conectando con servidores en Guatemala...</p>
+                </div>
+
+                <div id="result" class="hidden mt-4 p-4 bg-slate-950 rounded-2xl border border-slate-800 text-xs space-y-2.5">
+                    <!-- Populated dynamically -->
+                </div>
             </div>
-            <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white font-semibold py-2.5 px-4 rounded-lg hover:bg-blue-700 transition shadow-md">
-                Consultar Vehículo
-            </button>
-        </form>
+        </section>
 
-        <div id="loading" class="hidden mt-6 text-center">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent"></div>
-            <p class="text-sm text-blue-600 font-medium mt-2">Consultando registros en vivo (aprox. 30s)...</p>
-        </div>
+        <!-- Tab 2: VerifReels & Social Feed View (Hidden by default, toggled via bottom nav) -->
+        <section id="feedSection" class="hidden space-y-4">
+            <div class="flex justify-between items-center px-1">
+                <h3 class="text-sm font-bold text-slate-200 tracking-wide uppercase">VerifReels & Autos 🎬</h3>
+                <button class="text-xs bg-emerald-500/20 text-emerald-400 font-semibold px-3 py-1 rounded-full border border-emerald-500/30 hover:bg-emerald-500/30 transition">
+                    + Publicar Nave
+                </button>
+            </div>
 
-        <div id="result" class="hidden mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200 text-sm space-y-2">
-            <!-- Results populated dynamically -->
-        </div>
-    </div>
+            <!-- Social Feed Card -->
+            <article class="bg-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-800">
+                <div class="p-3.5 flex items-center space-x-3 border-b border-slate-800/60">
+                    <img class="w-9 h-9 rounded-full object-cover border border-emerald-500" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Avatar">
+                    <div>
+                        <h4 class="text-xs font-bold text-white flex items-center">Carlos Mendoza <span class="ml-1 text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded-full">Verificado ✓</span></h4>
+                        <p class="text-[10px] text-slate-400">Zona 10, Guatemala • Hace 2h</p>
+                    </div>
+                </div>
 
+                <div class="relative bg-slate-950 h-72 flex items-center justify-center overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover opacity-90" alt="Car Reel">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/40"></div>
+                    
+                    <span class="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-emerald-400 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-500/30">
+                        🚗 Toyota Hilux 2022 • Q145,000
+                    </span>
+
+                    <!-- Reactions -->
+                    <div class="absolute right-3 bottom-12 flex flex-col items-center space-y-2.5">
+                        <button class="bg-slate-900/80 backdrop-blur-md p-2.5 rounded-full hover:bg-emerald-600 transition shadow-lg text-xs">
+                            🔥 <span class="block text-[9px] text-slate-300 font-bold">342</span>
+                        </button>
+                        <button class="bg-slate-900/80 backdrop-blur-md p-2.5 rounded-full hover:bg-red-600 transition shadow-lg text-xs">
+                            🚨 <span class="block text-[9px] text-slate-300 font-bold">12</span>
+                        </button>
+                        <button class="bg-slate-900/80 backdrop-blur-md p-2.5 rounded-full hover:bg-blue-600 transition shadow-lg text-xs">
+                            💬 <span class="block text-[9px] text-slate-300 font-bold">48</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-3.5 space-y-2.5">
+                    <p class="text-xs text-slate-300">"Vendo mi nave bien cuidada, cero multas y lista para transferir en la SAT. ¡Incluye reporte limpio! 🤝💨"</p>
+                    <div class="flex space-x-2 pt-1">
+                        <button class="flex-1 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 text-xs font-semibold py-2 rounded-xl transition">
+                            Verificar Historial
+                        </button>
+                        <button class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition">
+                            Contactar
+                        </button>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <!-- Tab 3: Profile View (Hidden by default) -->
+        <section id="profileSection" class="hidden space-y-4">
+            <div class="bg-slate-900 rounded-3xl p-6 border border-slate-800 text-center space-y-4">
+                <img class="w-20 h-20 rounded-full mx-auto object-cover border-2 border-emerald-500 shadow-lg" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile">
+                <div>
+                    <h3 class="text-base font-bold text-white">Mi Cuenta VerifCar</h3>
+                    <p class="text-xs text-slate-400">usuario@verifcar.gt</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800">
+                        <span class="block text-lg font-bold text-emerald-400">4</span>
+                        <span class="text-[10px] text-slate-400">Consultas Realizadas</span>
+                    </div>
+                    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800">
+                        <span class="block text-lg font-bold text-blue-400">1</span>
+                        <span class="text-[10px] text-slate-400">Nave Publicada</span>
+                    </div>
+                </div>
+                <button class="w-full bg-slate-800 hover:bg-slate-700 text-red-400 text-xs font-semibold py-2.5 rounded-xl transition">
+                    Cerrar Sesión
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Mobile-First Bottom Navigation Bar (Android & iOS App Experience) -->
+    <nav class="w-full max-w-xl mx-auto bg-slate-900/90 backdrop-blur-md border-t border-slate-800 fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center py-2 px-2 md:rounded-t-3xl md:max-w-md md:bottom-4 md:border md:shadow-2xl">
+        <button onclick="switchTab('verifier')" id="navVerifier" class="flex flex-col items-center text-emerald-400 py-1 px-4 transition">
+            <i class="fa-solid fa-magnifying-glass text-base"></i>
+            <span class="text-[10px] font-semibold mt-1">Verificador</span>
+        </button>
+        <button onclick="switchTab('feed')" id="navFeed" class="flex flex-col items-center text-slate-400 hover:text-slate-200 py-1 px-4 transition">
+            <i class="fa-solid fa-film text-base"></i>
+            <span class="text-[10px] font-semibold mt-1">Reels</span>
+        </button>
+        <button onclick="switchTab('profile')" id="navProfile" class="flex flex-col items-center text-slate-400 hover:text-slate-200 py-1 px-4 transition">
+            <i class="fa-solid fa-user text-base"></i>
+            <span class="text-[10px] font-semibold mt-1">Perfil</span>
+        </button>
+    </nav>
+
+    <!-- Scripts for UI Switching and API Fetching -->
     <script>
+        function switchTab(tab) {
+            const verifier = document.getElementById('verifierSection');
+            const feed = document.getElementById('feedSection');
+            const profile = document.getElementById('profileSection');
+            
+            const btnVerifier = document.getElementById('navVerifier');
+            const btnFeed = document.getElementById('navFeed');
+            const btnProfile = document.getElementById('navProfile');
+
+            verifier.classList.add('hidden');
+            feed.classList.add('hidden');
+            profile.classList.add('hidden');
+
+            btnVerifier.className = "flex flex-col items-center text-slate-400 py-1 px-4 transition";
+            btnFeed.className = "flex flex-col items-center text-slate-400 py-1 px-4 transition";
+            btnProfile.className = "flex flex-col items-center text-slate-400 py-1 px-4 transition";
+
+            if(tab === 'verifier') {
+                verifier.classList.remove('hidden');
+                btnVerifier.className = "flex flex-col items-center text-emerald-400 py-1 px-4 transition";
+            } else if(tab === 'feed') {
+                feed.classList.remove('hidden');
+                btnFeed.className = "flex flex-col items-center text-emerald-400 py-1 px-4 transition";
+            } else if(tab === 'profile') {
+                profile.classList.remove('hidden');
+                btnProfile.className = "flex flex-col items-center text-emerald-400 py-1 px-4 transition";
+            }
+        }
+
         document.getElementById('vehicleForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const nit = document.getElementById('nit').value.trim();
@@ -64,18 +226,21 @@
                     const theft = data.pnc_theft_record || {};
                     
                     result.innerHTML = `
-                        <h3 class="font-bold text-gray-800 text-base mb-2 border-b pb-1">📋 Resultado del Reporte</h3>
+                        <h4 class="font-bold text-slate-200 text-xs mb-1.5 border-b border-slate-800 pb-1 flex items-center justify-between">
+                            <span>📋 Reporte Oficial VerifCar</span>
+                            <span class="text-[9px] text-emerald-400 font-mono">ID: GT-${Math.floor(Math.random()*90000+10000)}</span>
+                        </h4>
                         <p><strong>Vehículo:</strong> ${sat.make || 'N/A'} ${sat.model || ''} (${sat.year || 'N/A'})</p>
                         <p><strong>Color:</strong> ${sat.color || 'N/A'}</p>
-                        <p><strong>Estado SAT:</strong> <span class="px-2 py-0.5 rounded text-xs font-semibold ${sat.status === 'ACTIVO' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${sat.status || 'N/A'}</span></p>
-                        <p><strong>Impuestos Pendientes:</strong> ${sat.taxes_owed || '0.00 GTQ'}</p>
-                        <p><strong>Reporte de Robo (PNC):</strong> <span class="font-bold ${theft.stolen_report_active ? 'text-red-600' : 'text-green-600'}">${theft.stolen_report_active ? '🔴 ¡ALERTA: Reportado como Robado!' : '🟢 Sin reporte de robo'}</span></p>
+                        <p><strong>Estado SAT:</strong> <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold ${sat.status === 'ACTIVO' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}">${sat.status || 'N/A'}</span></p>
+                        <p><strong>Impuestos:</strong> ${sat.taxes_owed || '0.00 GTQ'}</p>
+                        <p><strong>Robo (PNC):</strong> <span class="font-bold ${theft.stolen_report_active ? 'text-red-400' : 'text-emerald-400'}">${theft.stolen_report_active ? '🔴 ¡Reportado Robado!' : '🟢 Seguro y Limpio'}</span></p>
                     `;
                 } else {
-                    result.innerHTML = `<p class="text-red-600 font-medium">Error: ${json.error || 'No se pudo completar la consulta.'}</p>`;
+                    result.innerHTML = `<p class="text-red-400 font-medium">Error: ${json.error || 'No se pudo completar la consulta.'}</p>`;
                 }
             } catch (err) {
-                result.innerHTML = `<p class="text-red-600 font-medium">Error de conexión con el servidor.</p>`;
+                result.innerHTML = `<p class="text-red-400 font-medium">Error de conexión con el servidor.</p>`;
             } finally {
                 loading.classList.add('hidden');
                 result.classList.remove('hidden');
