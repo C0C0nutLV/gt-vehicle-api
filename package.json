@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "start": "node server.js"
+},
+  "dependencies": {
+    "2captcha": "^3.0.5-2",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "puppeteer": "^25.4.0"
+  }
+}
